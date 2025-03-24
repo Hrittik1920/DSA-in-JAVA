@@ -1,3 +1,7 @@
+import java.util.HashSet;
+
+import org.w3c.dom.Node;
+
 public class MostIMPLLQue {
     LinkNode head = null;
     private int size = 0;
@@ -246,6 +250,27 @@ public class MostIMPLLQue {
         prev.next = null;
     }
 
+    public void removeLoopGFG() {
+        // code here
+        // remove the loop without losing any nodes
+        HashSet<LinkNode> s = new HashSet<LinkNode>();
+        LinkNode prev = null;
+        while (head != null) {
+            // If we have already seen this node in hash set, it means there is a cycle.
+            // Set the next of the previous pointer to null to remove the cycle.
+            if (s.contains(head)) {
+                prev.next = null;
+                return;
+            }
+            // If we are seeing the node for the first time, insert it in hash set.
+            else {
+                s.add(head);
+                prev = head;
+                head = head.next;
+            }
+        }
+    }
+
     public static void main(String[] args) {
         MostIMPLLQue list = new MostIMPLLQue();
         list.add(3);
@@ -259,11 +284,15 @@ public class MostIMPLLQue {
         list.add(9);
         list.add(4);
         list.add(6);
+        list.add(9);
+        list.add(4);
+        list.add(6);
+        list.printList();
         list.createLoop(5,1);
         System.out.println(list.hasCycle());
         System.out.println(list.loopStart().data);
-        list.removeLoop();
+        list.removeLoopGFG();
         System.out.println(list.hasCycle());
-        list.printList();
+        list.printList(); 
     }
 }

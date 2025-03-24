@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reading Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+      #passage,
+      #result {
+        margin-top: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Read the Passage</h2>
+    <button id="startBtn">Start Reading</button>
+    <div id="passage" style="display: none">
+      The quick brown fox jumps over the lazy dog
+    </div>
+    <div id="result"></div>
+
+    <script>
+      const startBtn = document.getElementById("startBtn");
+      const passageText = "The quick brown fox jumps over the lazy dog";
+      const resultDiv = document.getElementById("result");
+      const passageDiv = document.getElementById("passage");
+
+      startBtn.addEventListener("click", () => {
+        passageDiv.innerText = passageText;
+        passageDiv.style.display = "block";
+        resultDiv.innerText = "Listening...";
+
+        if ("webkitSpeechRecognition" in window) {
+          const recognition = new webkitSpeechRecognition();
+          recognition.lang = "en-US";
+          recognition.continuous = false;
+          recognition.interimResults = false;
+
+          recognition.onresult = (event) => {
+            const userText = event.results[0][0].transcript;
+            resultDiv.innerText = `You said: "${userText}"`;
+            const score = calculateScore(userText, passageText);
+            resultDiv.innerHTML += `<br>Score: ${score}%`;
+          };
+
+          recognition.onerror = () => {
+            resultDiv.innerText = "There was an error with speech recognition.";
+          };
+
+          recognition.start();
+        } else {
+          resultDiv.innerText =
+            "Your browser does not support Speech Recognition.";
+        }
+      });
+
+      function calculateScore(userText, passageText) {
+        const userWords = userText.toLowerCase().trim().split(/\s+/); // Split into words and remove extra spaces
+        const passageWords = passageText.toLowerCase().trim().split(/\s+/); // Same for passage text
+        const totalWords = Math.max(userWords.length, passageWords.length); // Total number of words to compare
+        let totalCharacters = 0; // Total characters in passage
+        let matchingCharacters = 0; // Correctly matched characters
+
+        // Loop through each word
+        for (let i = 0; i < totalWords; i++) {
+          const userWord = userWords[i] || ""; // If user text is shorter, use empty string for missing words
+          const passageWord = passageWords[i] || ""; // If passage is shorter, use empty string
+
+          // Calculate word lengths and loop through each character
+          const wordLength = Math.max(userWord.length, passageWord.length); // Take the longest word length
+          totalCharacters += passageWord.length; // Add passage word length to total characters
+
+          for (let j = 0; j < wordLength; j++) {
+            if (userWord[j] === passageWord[j]) {
+              matchingCharacters++; // Count matching characters
+            }
+          }
+        }
+
+        console.log(matchingCharacters, " ",  totalCharacters)
+        // Calculate percentage score based on character matches in passage text
+        return ((matchingCharacters / totalCharacters) * 100).toFixed(2);
+      }
+    </script>
+  </body>
+</html>
