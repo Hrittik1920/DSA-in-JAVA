@@ -23,10 +23,10 @@ public class _3_Equal_Subset_Sum {
         if(sum % 2 != 0) {
             return false;
         } 
-        return subsetSumTopDown(arr, sum, arr.length);
+        return subsetSumTopDown(arr, sum/2, arr.length);
     }
     public static void main(String[] args) {
-        int[] arr = {1, 4, 11, 7};
+        int[] arr = {1, 4, 11, 6};
         System.out.println(isEqualSubsetSum(arr));
     }
 }

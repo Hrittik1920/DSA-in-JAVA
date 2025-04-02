@@ -3,13 +3,13 @@ import java.util.List;
 
 public class CombinationSum {
     public static void combinationSum(int[] arr, int i, List<Integer> comb, List<List<Integer>> ans, int target) {
-        if(i == arr.length || target < 0) return;
         if(target == 0) {
-            ans.add(comb);
+            ans.add(new ArrayList<>(comb));
             return;
         }
+        if(i == arr.length || target < 0) return;
         comb.add(arr[i]);
-        combinationSum(arr, i+1, comb, ans, target-arr[i]);
+        // combinationSum(arr, i+1, comb, ans, target-arr[i]);
         combinationSum(arr, i, comb, ans, target-arr[i]);
         comb.remove(comb.size()-1);
         combinationSum(arr, i+1, comb, ans, target);
